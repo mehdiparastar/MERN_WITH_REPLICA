@@ -2,6 +2,7 @@
 
 docker image prune -f
 docker container prune -f
+docker system prune -f
 
 docker-compose up --build -d
 

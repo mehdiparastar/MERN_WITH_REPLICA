@@ -1,6 +1,6 @@
 const db = require("./db/db")
 
-const port = process.env.basePORT || 3004
+const port = process.env.basePORT || 3001
 
 db.initDbConnection()
     .then(out => {
