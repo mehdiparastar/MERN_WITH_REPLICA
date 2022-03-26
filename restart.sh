@@ -1,4 +1,7 @@
 #!/bin/bash
+docker-compose down
+
+sleep 5
 
 docker image prune -f
 docker container prune -f

@@ -75,12 +75,12 @@ services:
       ]
 
   client:
-    container_name: frontend
+    container_name: client
     build: ./client
     ports:
       - 3000:3000
     networks:
-      - mongors-network
+      - mongors-network    
     restart: always
 
   server:
@@ -98,7 +98,7 @@ services:
     restart: always
     environment:
       - REPLICA_URL=mongodb://db1:27017,db2:27017,db3:27017
-      - REPLICA_NAME=dbrs
+      - REPLICA_NAME=dbrs    
 
 networks:
   mongors-network:
