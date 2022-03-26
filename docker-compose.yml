@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  db1:
+    container_name: db1
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data1:/data/db
+      - ./rs-init.sh:/scripts/rs-init.sh
+    networks:
+      - mongors-network    
+    ports:
+      - 27021:27021
+    links:
+      - db2
+      - db3
+    restart: always
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs"
+      ]
+
+  db2:
+    container_name: db2
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data2:/data/db
+    networks:
+      - mongors-network    
+    ports:
+      - 27022:27022
+    restart: always
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs"
+      ]
+
+  db3:
+    container_name: db3
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data3:/data/db
+    networks:
+      - mongors-network    
+    ports:
+      - 27023:27023
+    restart: always
+    entrypoint:
+      [
+        "/usr/bin/mongod",
+        "--bind_ip_all",
+        "--replSet",
+        "dbrs",
+        "--port"
+      ]
+  front:
+    container_name: frontend
+    depends_on:
+      - back
+    build: ./bot_front
+    ports:
+      - 3000:3000
+    networks:
+      - mongors-network
+
+  back:
+    container_name: server
+    depends_on:
+      - db1
+      - db2
+      - db3
+    build: ./bot_back
+    ports:
+      - 3001:3001
+    networks:
+      - mongors-network
+    restart: always
+    environment:
+      - REPLICA_URL=mongodb://db1:27017,db2:27017,db3:27017
+      - REPLICA_NAME=dbrs
+
+networks:
+  mongors-network:
+    driver: bridge
