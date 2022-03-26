@@ -8,4 +8,4 @@ docker-compose up --build -d
 
 sleep 5
 
-docker exec db1 /scripts/rs-init.sh
+echo "app started."
