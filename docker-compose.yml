@@ -15,7 +15,7 @@ services:
     restart: "no"
     networks:
       - mongors-network
-    command: ./scripts/db-setup-entrypoint.sh
+    entrypoint: [ "./scripts/db-setup-entrypoint.sh" ]
 
   db1:
     container_name: db1
@@ -80,8 +80,10 @@ services:
     ports:
       - 3000:3000
     networks:
-      - mongors-network    
+      - mongors-network
     restart: always
+    environment:
+      - REACT_APP_API_URL=http://192.168.33.26:3001/api
 
   server:
     container_name: server
@@ -98,7 +100,7 @@ services:
     restart: always
     environment:
       - REPLICA_URL=mongodb://db1:27017,db2:27017,db3:27017
-      - REPLICA_NAME=dbrs    
+      - REPLICA_NAME=dbrs
 
 networks:
   mongors-network:
